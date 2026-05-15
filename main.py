@@ -103,7 +103,6 @@ def dashboard(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
         request,
         "index.html",
         {
-            "request": request,
             "logs": logs,
         },
     )
