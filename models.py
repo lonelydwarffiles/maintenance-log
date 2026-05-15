@@ -25,4 +25,13 @@ class MaintenanceLog(Base):
     )
     phone_number: Mapped[str] = mapped_column(String, nullable=False)
     machine_name: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    engine_hours: Mapped[str | None] = mapped_column(String, nullable=True)
     task_description: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class AllowedNumber(Base):
+    __tablename__ = "allowed_numbers"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    phone_number: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    owner_name: Mapped[str] = mapped_column(String, nullable=False)
