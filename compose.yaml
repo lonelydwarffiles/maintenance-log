@@ -12,16 +12,9 @@ services:
       - UVICORN_PORT=8124
   cloudflared:
     image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    depends_on:
-      - maintenance-log
-    # Set CLOUDFLARED_TUNNEL_TOKEN in your Compose environment (.env / Komodo UI).
-    # Generate the token in the Cloudflare Zero Trust dashboard for your tunnel.
+    # Notice how we completely removed any mention of /bin/sh!
+    command: tunnel --no-autoupdate run
     environment:
-      - CLOUDFLARED_TUNNEL_TOKEN
-    entrypoint: ["/bin/sh", "-ec"]
-    command:
-      - 'test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "Error: CLOUDFLARED_TUNNEL_TOKEN is not set" >&2; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
-
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN} # Make sure the token is passed here!
 volumes:
   maintenance-data:
