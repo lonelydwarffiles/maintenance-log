@@ -4,7 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     MAINTENANCE_DB_PATH=/app/data/maintenance.db \
     UVICORN_HOST=0.0.0.0 \
-    UVICORN_PORT=8000
+    UVICORN_PORT=8124
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ COPY . .
 RUN mkdir -p /app/data
 VOLUME ["/app/data"]
 
-EXPOSE 8000
+EXPOSE 8124
 
 RUN chmod +x /app/entrypoint.sh
 
