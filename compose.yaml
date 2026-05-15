@@ -1,0 +1,18 @@
+services:
+  maintenance-log:
+    build: .
+    image: maintenance-log
+    restart: unless-stopped
+    ports:
+      - "8124:8124"
+    volumes:
+      - maintenance-data:/app/data
+    environment:
+      - MAINTENANCE_DB_PATH=/app/data/maintenance.db
+      - UVICORN_HOST=0.0.0.0
+      - UVICORN_PORT=8124
+      # Uncomment and set to enable Cloudflare Tunnel:
+      # - CLOUDFLARED_TUNNEL_TOKEN=your-cloudflare-tunnel-token
+
+volumes:
+  maintenance-data:
