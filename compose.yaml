@@ -19,8 +19,9 @@ services:
     # Generate the token in the Cloudflare Zero Trust dashboard for your tunnel.
     environment:
       - CLOUDFLARED_TUNNEL_TOKEN
-    command: >-
-      /bin/sh -ec 'test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "Error: CLOUDFLARED_TUNNEL_TOKEN is not set" >&2; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - 'test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "Error: CLOUDFLARED_TUNNEL_TOKEN is not set" >&2; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
 
 volumes:
   maintenance-data:
