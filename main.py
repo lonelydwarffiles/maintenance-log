@@ -121,7 +121,7 @@ async def sms_webhook(
             f"{log.timestamp.strftime('%Y-%m-%d %H:%M UTC')}: {log.task_description}"
             for log in logs
         ]
-        response_text += f"Recent logs for {machine_name}:\n" + "\n".join(formatted_logs)
+        response_text += f"Recent {len(logs)} logs for {machine_name}:\n" + "\n".join(formatted_logs)
         return build_twiml(response_text)
 
     machine_name, engine_hours, task_description = parse_log_message(message_body)
