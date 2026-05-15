@@ -17,9 +17,10 @@ services:
     restart: unless-stopped
     depends_on:
       - maintenance-log
+    # Set CLOUDFLARED_TUNNEL_TOKEN in your Compose environment (.env / Komodo UI).
     environment:
       - CLOUDFLARED_TUNNEL_TOKEN
-    command: '/bin/sh -ec ''test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "CLOUDFLARED_TUNNEL_TOKEN is required"; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'''
+    command: tunnel --no-autoupdate run --token $$CLOUDFLARED_TUNNEL_TOKEN
 
 volumes:
   maintenance-data:
