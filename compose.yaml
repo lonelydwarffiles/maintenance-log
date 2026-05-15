@@ -12,10 +12,14 @@ services:
       - UVICORN_PORT=8124
   cloudflared:
     image: cloudflare/cloudflared:latest
+    profiles:
+      - tunnel
     restart: unless-stopped
     depends_on:
       - maintenance-log
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
+    environment:
+      - CLOUDFLARED_TUNNEL_TOKEN
+    command: '/bin/sh -ec ''test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "CLOUDFLARED_TUNNEL_TOKEN is required"; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'''
 
 volumes:
   maintenance-data:
