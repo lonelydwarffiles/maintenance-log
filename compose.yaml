@@ -19,8 +19,8 @@ services:
       - maintenance-log
     # Set CLOUDFLARED_TUNNEL_TOKEN in your Compose environment (.env / Komodo UI).
     environment:
-      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN:-}
-    command: tunnel --no-autoupdate run
+      - CLOUDFLARED_TUNNEL_TOKEN
+    command: /bin/sh -ec 'exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
 
 volumes:
   maintenance-data:
