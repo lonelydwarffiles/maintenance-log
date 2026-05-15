@@ -72,6 +72,11 @@ def parse_log_message(message_body: str) -> tuple[str, str | None, str]:
     return machine_name, None, task_description
 
 
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/dashboard", status_code=307)
+
+
 @app.post("/sms")
 async def sms_webhook(
     Body: str = Form(...),
