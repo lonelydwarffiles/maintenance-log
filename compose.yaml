@@ -18,9 +18,10 @@ services:
     depends_on:
       - maintenance-log
     # Set CLOUDFLARED_TUNNEL_TOKEN in your Compose environment (.env / Komodo UI).
+    # Generate the token in the Cloudflare Zero Trust dashboard for your tunnel.
     environment:
       - CLOUDFLARED_TUNNEL_TOKEN
-    command: /bin/sh -ec 'exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
+    command: /bin/sh -ec 'test -n "$$CLOUDFLARED_TUNNEL_TOKEN"; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
 
 volumes:
   maintenance-data:
