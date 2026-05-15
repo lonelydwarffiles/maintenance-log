@@ -10,8 +10,19 @@ services:
       - MAINTENANCE_DB_PATH=/app/data/maintenance.db
       - UVICORN_HOST=0.0.0.0
       - UVICORN_PORT=8124
-      # Uncomment and set to enable Cloudflare Tunnel:
-      # - CLOUDFLARED_TUNNEL_TOKEN=your-cloudflare-tunnel-token
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles:
+      - tunnel
+    restart: unless-stopped
+    depends_on:
+      - maintenance-log
+    # Set CLOUDFLARED_TUNNEL_TOKEN in your Compose environment (.env / Komodo UI).
+    # Generate the token in the Cloudflare Zero Trust dashboard for your tunnel.
+    environment:
+      - CLOUDFLARED_TUNNEL_TOKEN
+    command: >-
+      /bin/sh -ec 'test -n "$$CLOUDFLARED_TUNNEL_TOKEN" || { echo "Error: CLOUDFLARED_TUNNEL_TOKEN is not set" >&2; exit 1; }; exec cloudflared tunnel --no-autoupdate run --token "$$CLOUDFLARED_TUNNEL_TOKEN"'
 
 volumes:
   maintenance-data:
