@@ -1,7 +1,6 @@
 services:
   maintenance-log:
     build: .
-    image: maintenance-log
     restart: unless-stopped
     ports:
       - "8124:8124"
