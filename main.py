@@ -90,10 +90,20 @@ async def sms_webhook(
     if allowed_number is None:
         return build_empty_twiml()
 
+    response_text = ""
+    if not allowed_number.has_onboarded:
+        response_text += (
+            "Welcome to the Maintenance Log! To log: 'Machine - Hours - Task' "
+            "(e.g., '308 - 4500h - oil change'). To search: 'GET Machine'.\n\n"
+        )
+        allowed_number.has_onboarded = True
+        db.commit()
+
     if message_body.upper().startswith("GET "):
         machine_name = message_body[4:].strip()
         if not machine_name:
-            return build_twiml("Invalid GET format. Use: GET [Machine Name]")
+            response_text += "Invalid GET format. Use: GET [Machine Name]"
+            return build_twiml(response_text)
 
         logs = (
             db.query(MaintenanceLog)
@@ -104,22 +114,25 @@ async def sms_webhook(
         )
 
         if not logs:
-            return build_twiml(f"No maintenance records found for {machine_name}.")
+            response_text += f"No maintenance records found for {machine_name}."
+            return build_twiml(response_text)
 
         formatted_logs = [
             f"{log.timestamp.strftime('%Y-%m-%d %H:%M UTC')}: {log.task_description}"
             for log in logs
         ]
-        return build_twiml(f"Last {len(logs)} logs for {machine_name}:\n" + "\n".join(formatted_logs))
+        response_text += f"Recent logs for {machine_name}:\n" + "\n".join(formatted_logs)
+        return build_twiml(response_text)
 
     machine_name, engine_hours, task_description = parse_log_message(message_body)
 
     if not machine_name or not task_description:
-        return build_twiml(
+        response_text += (
             "Could not parse your message. Please use: [Machine Name] - [Task], "
             "[Machine Name]: [Task], [Machine Name], [Task], or "
             "[Machine Name] - [Engine Hours] - [Task]"
         )
+        return build_twiml(response_text)
 
     new_log = MaintenanceLog(
         phone_number=from_number,
@@ -131,8 +144,10 @@ async def sms_webhook(
     db.commit()
     db.refresh(new_log)
     if engine_hours:
-        return build_twiml(f"Logged maintenance for {machine_name} at {engine_hours}: {task_description}")
-    return build_twiml(f"Logged maintenance for {machine_name}: {task_description}")
+        response_text += f"Logged: {task_description} on {machine_name} at {engine_hours}."
+    else:
+        response_text += f"Logged: {task_description} on {machine_name}."
+    return build_twiml(response_text)
 
 
 @app.post("/add-number")
