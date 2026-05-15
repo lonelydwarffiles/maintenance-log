@@ -50,7 +50,7 @@ A `compose.yaml` is included for easy deployment via [Komodo](https://komo.do) o
 docker compose up -d
 ```
 
-To enable the Cloudflare Tunnel, uncomment and set `CLOUDFLARED_TUNNEL_TOKEN` in `compose.yaml` (or override it via Komodo's environment variable UI).
+To enable the Cloudflare Tunnel service, set `CLOUDFLARED_TUNNEL_TOKEN` in your Compose environment (for example in a `.env` file or via Komodo's environment variable UI).
 
 The named volume `maintenance-data` persists the SQLite database across container restarts and re-deploys.
 

@@ -10,8 +10,12 @@ services:
       - MAINTENANCE_DB_PATH=/app/data/maintenance.db
       - UVICORN_HOST=0.0.0.0
       - UVICORN_PORT=8124
-      # Uncomment and set to enable Cloudflare Tunnel:
-      # - CLOUDFLARED_TUNNEL_TOKEN=your-cloudflare-tunnel-token
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      - maintenance-log
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
 
 volumes:
   maintenance-data:
