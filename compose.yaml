@@ -12,7 +12,6 @@ services:
       - UVICORN_PORT=8124
   cloudflared:
     image: cloudflare/cloudflared:latest
-    profiles: ["tunnel"]
     restart: unless-stopped
     depends_on:
       - maintenance-log
