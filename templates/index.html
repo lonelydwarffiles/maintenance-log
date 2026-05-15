@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="mx-auto max-w-7xl px-6 py-10">
+        <section class="rounded-2xl border border-amber-500/20 bg-slate-900 shadow-2xl shadow-amber-950/20">
+            <div class="border-b border-slate-800 px-6 py-5">
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">Equipment Maintenance</p>
+                <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Industrial Maintenance Dashboard</h1>
+                        <p class="mt-2 text-sm text-slate-400">Review the latest maintenance activity logged through the SMS workflow.</p>
+                    </div>
+                    <div class="w-full max-w-md">
+                        <label for="log-filter" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Filter logs</label>
+                        <input
+                            id="log-filter"
+                            type="text"
+                            placeholder="Search by machine or task"
+                            class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-amber-400"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-800 text-left text-sm">
+                    <thead class="bg-slate-950/70 text-xs uppercase tracking-[0.25em] text-slate-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">Date</th>
+                            <th scope="col" class="px-6 py-4">Machine</th>
+                            <th scope="col" class="px-6 py-4">Task</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table" class="divide-y divide-slate-800">
+                        {% for log in logs %}
+                        <tr class="log-row transition hover:bg-slate-800/60" data-machine="{{ log.machine_name|lower }}" data-task="{{ log.task_description|lower }}">
+                            <td class="whitespace-nowrap px-6 py-4 text-slate-300">{{ log.timestamp.strftime('%Y-%m-%d %H:%M UTC') }}</td>
+                            <td class="px-6 py-4 font-medium text-white">{{ log.machine_name }}</td>
+                            <td class="px-6 py-4 text-slate-300">{{ log.task_description }}</td>
+                        </tr>
+                        {% else %}
+                        <tr id="empty-state-row">
+                            <td colspan="3" class="px-6 py-8 text-center text-slate-500">No maintenance logs have been recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const filterInput = document.getElementById('log-filter');
+        const rows = Array.from(document.querySelectorAll('.log-row'));
+
+        filterInput.addEventListener('input', (event) => {
+            const query = event.target.value.trim().toLowerCase();
+
+            rows.forEach((row) => {
+                const machine = row.dataset.machine || '';
+                const task = row.dataset.task || '';
+                const matches = machine.includes(query) || task.includes(query);
+                row.classList.toggle('hidden', !matches);
+            });
+        });
+    </script>
+</body>
+</html>
