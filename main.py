@@ -74,7 +74,7 @@ def parse_log_message(message_body: str) -> tuple[str, str | None, str]:
 
 @app.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
-    return RedirectResponse(url="/dashboard", status_code=307)
+    return RedirectResponse(url="/dashboard", status_code=302)
 
 
 @app.post("/sms")
