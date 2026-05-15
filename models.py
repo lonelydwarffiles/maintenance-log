@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Integer, String
+from sqlalchemy import Boolean, DateTime, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -35,4 +35,9 @@ class AllowedNumber(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     phone_number: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     owner_name: Mapped[str] = mapped_column(String, nullable=False)
-    has_onboarded: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    has_onboarded: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default=text("0"),
+    )
