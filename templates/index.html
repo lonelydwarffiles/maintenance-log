@@ -3,19 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance Dashboard</title>
+    <title>{% if is_admin %}Admin{% else %}Maintenance{% endif %} Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100">
     <main class="mx-auto max-w-7xl px-6 py-10">
-        <section class="mb-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
-            <div class="rounded-2xl border border-emerald-500/20 bg-slate-900 shadow-2xl shadow-emerald-950/20">
-                <div class="border-b border-slate-800 px-6 py-5">
+        <section class="mb-8 rounded-2xl border border-amber-500/20 bg-slate-900 shadow-2xl shadow-amber-950/20">
+            <div class="border-b border-slate-800 px-6 py-5">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
+                            {% if is_admin %}Admin Controls{% else %}Equipment Maintenance{% endif %}
+                        </p>
+                        <h1 class="mt-3 text-3xl font-bold text-white">
+                            {% if is_admin %}Industrial Maintenance Admin{% else %}Industrial Maintenance Dashboard{% endif %}
+                        </h1>
+                        <p class="mt-2 text-sm text-slate-400">
+                            {% if is_admin %}
+                            Add and manage maintenance history and authorized phone numbers.
+                            {% else %}
+                            Review the latest maintenance activity logged through the SMS workflow.
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% if service_phone_number %}
+                    <div class="rounded-2xl border border-amber-500/20 bg-slate-950/80 px-5 py-4 lg:min-w-80">
+                        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-300">Text this number</p>
+                        <p class="mt-2 text-2xl font-bold text-white">{{ service_phone_number }}</p>
+                        <p class="mt-2 text-sm text-slate-400">Share this number so others can send maintenance updates by SMS.</p>
+                    </div>
+                    {% endif %}
+                    <div class="w-full max-w-md">
+                        <label for="log-filter" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Filter logs</label>
+                        <input
+                            id="log-filter"
+                            type="text"
+                            placeholder="Search by date, machine, hours, or task"
+                            class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-amber-400"
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if is_admin %}
+        <section class="mb-8 grid gap-8 lg:grid-cols-2">
+            <details class="overflow-hidden rounded-2xl border border-emerald-500/20 bg-slate-900 shadow-2xl shadow-emerald-950/20" open>
+                <summary class="cursor-pointer list-none border-b border-slate-800 px-6 py-5">
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-400">Records</p>
+                    <h2 class="mt-3 text-2xl font-bold text-white">Add Maintenance Record</h2>
+                    <p class="mt-2 text-sm text-slate-400">Hours are optional, so leave them blank when they were not recorded.</p>
+                </summary>
+                <div class="px-6 py-5">
+                    <form action="/admin/logs" method="post" class="grid gap-4">
+                        <div>
+                            <label for="log_date" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Date</label>
+                            <input id="log_date" name="log_date" type="date" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-emerald-400">
+                        </div>
+                        <div>
+                            <label for="machine_name" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Machine</label>
+                            <input id="machine_name" name="machine_name" type="text" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-emerald-400">
+                        </div>
+                        <div>
+                            <label for="engine_hours" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Engine Hours</label>
+                            <input id="engine_hours" name="engine_hours" type="text" placeholder="Optional" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-emerald-400">
+                        </div>
+                        <div>
+                            <label for="task_description" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Task</label>
+                            <input id="task_description" name="task_description" type="text" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-emerald-400">
+                        </div>
+                        <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400">
+                            Add Record
+                        </button>
+                    </form>
+                </div>
+            </details>
+
+            <details class="overflow-hidden rounded-2xl border border-emerald-500/20 bg-slate-900 shadow-2xl shadow-emerald-950/20" open>
+                <summary class="cursor-pointer list-none border-b border-slate-800 px-6 py-5">
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-400">Access Control</p>
                     <h2 class="mt-3 text-2xl font-bold text-white">Authorized Users</h2>
-                    <p class="mt-2 text-sm text-slate-400">Allow only approved phone numbers in E.164 format to submit SMS maintenance logs.</p>
-                </div>
-                <div class="px-6 py-5">
+                    <p class="mt-2 text-sm text-slate-400">Add or remove phone numbers that can submit SMS maintenance logs.</p>
+                </summary>
+                <div class="grid gap-6 px-6 py-5">
                     <form action="/add-number" method="post" class="grid gap-4">
                         <div>
                             <label for="owner_name" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Name</label>
@@ -32,11 +102,14 @@
                             <input
                                 id="phone_number"
                                 name="phone_number"
-                                type="text"
-                                placeholder="+15551234567"
+                                type="tel"
+                                inputmode="tel"
+                                autocomplete="tel"
+                                placeholder="(555) 123-4567"
                                 required
                                 class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-emerald-400"
                             >
+                            <p class="mt-2 text-xs text-slate-500">US numbers are converted to +1 automatically, and international entries can still use full E.164 format.</p>
                         </div>
                         <button
                             type="submit"
@@ -45,15 +118,7 @@
                             Add Authorized User
                         </button>
                     </form>
-                </div>
-            </div>
 
-            <div class="rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl shadow-slate-950/20">
-                <div class="border-b border-slate-800 px-6 py-5">
-                    <h3 class="text-lg font-semibold text-white">Current Allow List</h3>
-                    <p class="mt-2 text-sm text-slate-400">Delete a number to block future SMS submissions immediately.</p>
-                </div>
-                <div class="px-6 py-5">
                     <div class="space-y-4">
                         {% for number in allowed_numbers %}
                         <div class="flex items-start justify-between gap-4 rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-4">
@@ -77,71 +142,67 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
+            </details>
         </section>
+        {% endif %}
 
-        <section class="rounded-2xl border border-amber-500/20 bg-slate-900 shadow-2xl shadow-amber-950/20">
-            <div class="border-b border-slate-800 px-6 py-5">
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">Equipment Maintenance</p>
-                <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-white">Industrial Maintenance Dashboard</h1>
-                        <p class="mt-2 text-sm text-slate-400">Review the latest maintenance activity logged through the SMS workflow.</p>
+        <section class="space-y-4">
+            {% for log in logs %}
+            <details class="log-card overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl shadow-slate-950/20 transition open:border-amber-500/30" data-machine="{{ log.machine_name|lower }}" data-hours="{{ (log.engine_hours or '')|lower }}" data-task="{{ log.task_description|lower }}" data-date="{{ log.timestamp.strftime('%Y-%m-%d %H:%M UTC')|lower }}">
+                <summary class="cursor-pointer list-none px-6 py-5">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">{{ log.timestamp.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+                            <h2 class="mt-2 text-xl font-semibold text-white">{{ log.machine_name }}</h2>
+                        </div>
+                        <div class="flex flex-wrap gap-3 text-sm">
+                            <span class="rounded-full bg-slate-950 px-4 py-2 text-slate-300">Hours: {{ log.engine_hours or 'Not provided' }}</span>
+                            <span class="rounded-full bg-amber-500/10 px-4 py-2 text-amber-200">Tap to expand</span>
+                        </div>
                     </div>
-                    <div class="w-full max-w-md">
-                        <label for="log-filter" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Filter logs</label>
-                        <input
-                            id="log-filter"
-                            type="text"
-                            placeholder="Search by machine or task"
-                            class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none ring-0 transition focus:border-amber-400"
+                </summary>
+                <div class="border-t border-slate-800 px-6 py-5">
+                    <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">Task</p>
+                    <p class="mt-3 text-base text-slate-200">{{ log.task_description }}</p>
+                    {% if is_admin %}
+                    <form action="/admin/logs/{{ log.id }}/delete" method="post" class="mt-5">
+                        <button
+                            type="submit"
+                            class="inline-flex items-center justify-center rounded-lg border border-rose-500/40 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-rose-300 transition hover:border-rose-400 hover:text-rose-200"
                         >
-                    </div>
+                            Delete Record
+                        </button>
+                    </form>
+                    {% endif %}
                 </div>
+            </details>
+            {% else %}
+            <div id="empty-state-row" class="rounded-2xl border border-dashed border-slate-800 px-6 py-8 text-center text-slate-500">
+                No maintenance logs have been recorded yet.
             </div>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-800 text-left text-sm">
-                    <thead class="bg-slate-950/70 text-xs uppercase tracking-[0.25em] text-slate-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-4">Date</th>
-                            <th scope="col" class="px-6 py-4">Machine</th>
-                            <th scope="col" class="px-6 py-4">Engine Hours</th>
-                            <th scope="col" class="px-6 py-4">Task</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logs-table" class="divide-y divide-slate-800">
-                        {% for log in logs %}
-                        <tr class="log-row transition hover:bg-slate-800/60" data-machine="{{ log.machine_name|lower }}" data-hours="{{ (log.engine_hours or '')|lower }}" data-task="{{ log.task_description|lower }}">
-                            <td class="whitespace-nowrap px-6 py-4 text-slate-300">{{ log.timestamp.strftime('%Y-%m-%d %H:%M UTC') }}</td>
-                            <td class="px-6 py-4 font-medium text-white">{{ log.machine_name }}</td>
-                            <td class="px-6 py-4 text-slate-300">{{ log.engine_hours or '—' }}</td>
-                            <td class="px-6 py-4 text-slate-300">{{ log.task_description }}</td>
-                        </tr>
-                        {% else %}
-                        <tr id="empty-state-row">
-                            <td colspan="4" class="px-6 py-8 text-center text-slate-500">No maintenance logs have been recorded yet.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% endfor %}
         </section>
     </main>
 
     <script>
         const filterInput = document.getElementById('log-filter');
-        const rows = Array.from(document.querySelectorAll('.log-row'));
+        const cards = Array.from(document.querySelectorAll('.log-card'));
 
         filterInput.addEventListener('input', (event) => {
             const query = event.target.value.trim().toLowerCase();
 
-            rows.forEach((row) => {
-                const machine = row.dataset.machine || '';
-                const hours = row.dataset.hours || '';
-                const task = row.dataset.task || '';
-                const matches = machine.includes(query) || hours.includes(query) || task.includes(query);
-                row.classList.toggle('hidden', !matches);
+            cards.forEach((card) => {
+                const machine = card.dataset.machine || '';
+                const hours = card.dataset.hours || '';
+                const task = card.dataset.task || '';
+                const date = card.dataset.date || '';
+                const matches =
+                    machine.includes(query) ||
+                    hours.includes(query) ||
+                    task.includes(query) ||
+                    date.includes(query);
+
+                card.classList.toggle('hidden', !matches);
             });
         });
     </script>
