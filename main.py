@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -25,8 +26,8 @@ security = HTTPBasic()
 DELIMITER_RE = re.compile(r"[-:,]")
 E164_RE = re.compile(r"^\+[1-9]\d{1,14}$")
 NON_DIGIT_RE = re.compile(r"\D+")
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin"
+ADMIN_USERNAME = os.getenv("MAINTENANCE_ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("MAINTENANCE_ADMIN_PASSWORD", "admin")
 INITIAL_LOGS_SETTING_KEY = "seeded-admin-logs-2026-05"
 INITIAL_LOGS = (
     (datetime(2026, 5, 6, 0, 0, tzinfo=timezone.utc), "299", "2gal hydraulic oil"),

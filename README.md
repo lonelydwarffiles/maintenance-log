@@ -9,6 +9,8 @@ The application supports the following environment variables.
 | Variable | Required | Default | Purpose |
 | --- | --- | --- | --- |
 | `MAINTENANCE_DB_PATH` | No | `maintenance.db` locally / `/app/data/maintenance.db` in Docker | SQLite database file path. |
+| `MAINTENANCE_ADMIN_USERNAME` | No | `admin` | Username for the admin dashboard basic auth login. |
+| `MAINTENANCE_ADMIN_PASSWORD` | No | `admin` | Password for the admin dashboard basic auth login. |
 | `UVICORN_HOST` | No | `0.0.0.0` | Host interface for the FastAPI server inside the container. |
 | `UVICORN_PORT` | No | `8124` | Port used by Uvicorn inside the container. |
 | `CLOUDFLARED_TUNNEL_TOKEN` | No | _unset_ | When set, the container starts `cloudflared tunnel run` alongside the FastAPI app so Twilio can reach the webhook through a Cloudflare Tunnel. |
@@ -76,6 +78,6 @@ Supported SMS commands:
 
 - Public log view: `/dashboard`
 - Admin view: `/admin`
-- Temporary basic auth credentials: `admin` / `admin`
+- Default basic auth credentials: `admin` / `admin`
 
 The admin page can add and delete maintenance records, manage the allow list, and accepts friendlier phone number input such as `(555) 123-4567` by normalizing it to E.164 on submit.
