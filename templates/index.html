@@ -26,6 +26,13 @@
                             {% endif %}
                         </p>
                     </div>
+                    {% if service_phone_number %}
+                    <div class="rounded-2xl border border-amber-500/20 bg-slate-950/80 px-5 py-4 lg:min-w-80">
+                        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-300">Text this number</p>
+                        <p class="mt-2 text-2xl font-bold text-white">{{ service_phone_number }}</p>
+                        <p class="mt-2 text-sm text-slate-400">Share this number so others can send maintenance updates by SMS.</p>
+                    </div>
+                    {% endif %}
                     <div class="w-full max-w-md">
                         <label for="log-filter" class="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Filter logs</label>
                         <input

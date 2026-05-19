@@ -28,6 +28,7 @@ E164_RE = re.compile(r"^\+[1-9]\d{1,14}$")
 NON_DIGIT_RE = re.compile(r"\D+")
 ADMIN_USERNAME = os.getenv("MAINTENANCE_ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.getenv("MAINTENANCE_ADMIN_PASSWORD", "admin")
+SERVICE_PHONE_NUMBER = os.getenv("MAINTENANCE_SERVICE_PHONE", "").strip()
 INITIAL_LOGS_SETTING_KEY = "seeded-admin-logs-2026-05"
 INITIAL_LOGS = (
     (datetime(2026, 5, 6, 0, 0, tzinfo=timezone.utc), "299", "2gal hydraulic oil"),
@@ -326,6 +327,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
         {
             "logs": logs,
             "is_admin": False,
+            "service_phone_number": SERVICE_PHONE_NUMBER,
         },
     )
 
@@ -345,5 +347,6 @@ def admin_dashboard(
             "logs": logs,
             "allowed_numbers": allowed_numbers,
             "is_admin": True,
+            "service_phone_number": SERVICE_PHONE_NUMBER,
         },
     )
