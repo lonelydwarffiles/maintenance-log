@@ -41,3 +41,10 @@ class AllowedNumber(Base):
         default=False,
         server_default=text("false"),
     )
+
+
+class AppSetting(Base):
+    __tablename__ = "app_settings"
+
+    key: Mapped[str] = mapped_column(String, primary_key=True)
+    value: Mapped[str] = mapped_column(String, nullable=False)

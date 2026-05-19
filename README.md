@@ -71,3 +71,11 @@ Supported SMS commands:
 
 - `LOG [Machine Name] - [Task]`
 - `GET [Machine Name]`
+
+## Admin page
+
+- Public log view: `/dashboard`
+- Admin view: `/admin`
+- Temporary basic auth credentials: `admin` / `admin`
+
+The admin page can add and delete maintenance records, manage the allow list, and accepts friendlier phone number input such as `(555) 123-4567` by normalizing it to E.164 on submit.
